@@ -1,0 +1,18 @@
+.counter {
+    background-color: black;
+    color: red; 
+    font-family: Menlo, Monaco, Consolas, monospace;
+    font-weight: bold;
+    font-size: 16pt;
+    float: left;
+    border-width: 8px;
+    border-style: ridge;
+    border-top-color: #eeeeee;
+    border-left-color: #eeeeee;
+    border-right-color: #bbbbbb;
+    border-bottom-color: #bbbbbb;
+    padding: 4px;
+    height: 24px;
+  }
+  
+  

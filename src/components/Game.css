@@ -1,0 +1,26 @@
+.gameContainer {
+    display: inline-block;
+}
+  
+.boardContainer {
+  
+}
+  
+.boardContainer:after, .statusContainer:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+  
+.statusContainer {
+    padding: 4px;
+    background: #dddddd;
+}
+  
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
