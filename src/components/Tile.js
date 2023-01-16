@@ -7,6 +7,9 @@ import './Tile.css';
 const BOMB_VALUE = '\u{1F4A3}';
 const FLAG_VALUE = '\u{1F6A9}';
 
+/**
+ * A tile in the game board
+ */
 class Tile extends React.Component {
 
     constructor(props) {
@@ -14,28 +17,29 @@ class Tile extends React.Component {
     }
   
     render() {
+        const id = this.props.tileState.key;
         if (this.props.tileState.revealed) {
             if (this.props.tileState.isBomb) {
                 return (
-                    <div className="revealedTile bomb">{BOMB_VALUE}</div>
+                    <button data-testid={id} className="revealedTile bomb">{BOMB_VALUE}</button>
                 );
             } else if (this.props.tileState.value === 0) {
                 return (
-                    <div className="revealedTile" />
+                    <button data-testid={id} className="revealedTile" />
                 );
             } else {
                 const className = "revealedTile tile" + this.props.tileState.value;
                 return (
-                    <div className={className} onClick={this.props.onClick}>{this.props.tileState.value}</div>
+                    <button data-testid={id} className={className} onClick={this.props.onClick}>{this.props.tileState.value}</button>
                 );
             }
         } else if (this.props.tileState.flagged) {
             return (
-                <div className="flaggedTile" onContextMenu={this.props.onContextMenu}>{FLAG_VALUE}</div>
+                <button data-testid={id} className="flaggedTile" onContextMenu={this.props.onContextMenu}>{FLAG_VALUE}</button>
             );
         } else {
             return (
-                <div className="hiddenTile" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu} />
+                <button data-testid={id} className="hiddenTile" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu} />
             );
         }
     }

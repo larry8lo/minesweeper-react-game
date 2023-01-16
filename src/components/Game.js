@@ -43,10 +43,10 @@ class Game extends React.Component {
      */
     createState(width, height, bombs) {
         return {
-        tiles: this.fillBoard(width, height, bombs),
-        bombCounter: bombs,
-        elapsedSecs: 0,
-        gameState: START_WAIT,
+            tiles: this.fillBoard(width, height, bombs),
+            bombCount: bombs,
+            elapsedSecs: 0,
+            gameState: START_WAIT,
         };
     }
 
@@ -68,25 +68,21 @@ class Game extends React.Component {
         // create a tile state for each cell
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-                board[y][x] = this.createTileState(x, y, false, -1, false, false);
+                board[y][x] = createTileState(x, y, false, -1, false, false);
             }
         }
 
         // put bombs into the board
-        for (let i = 0; i < bombs; i++) {
-            let x, y;
-            do {
-                x = randomInt(width);
-                y = randomInt(height);
-            } while (board[y][x].isBomb)
-            board[y][x].isBomb = true;  
-        }
+        const bombPlanter = this.props.bombPlanter ? this.props.bombPlanter : randomlyPlantBombs;
+        bombPlanter(width, height, bombs).forEach(pt => {
+            board[pt.y][pt.x].isBomb = true; 
+        });
 
         // compute adjacent bomb count
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
                 if (!board[y][x].isBomb) {
-                board[y][x].value = this.countAdjacentBombs(x, y, board, width, height);
+                    board[y][x].value = this.countAdjacentBombs(x, y, board, width, height);
                 }
             }
         }
@@ -148,28 +144,30 @@ class Game extends React.Component {
      */
     render() {
         return (
-        <div className="gameContainer">
-            <div className="statusContainer">
-            <Counter key="bombCounter" value={this.state.bombCounter} float="left"/>
-            <ControlButton value={GAME_BUTTON_VALUES[this.state.gameState]} float="left" onClick={() => this.restartGame()} />
-            <Counter key="timer" value={this.state.elapsedSecs} float="left" />
-            <ControlButton value={QUESTION_VALUE} float="right" />
-            <ControlButton value={GEAR_VALUE} float="right" />
-            </div>
-            <div className="boardContainer">
-            {this.state.tiles.map(row => (
-                <div className="boardRow">
-                {row.map(tile => (
-                    <Tile 
-                        key={tile.key} 
-                        tileState={tile} 
-                        onClick={() => this.revealTile(tile)} 
-                        onContextMenu={(e) => { e.preventDefault();this.flagTile(tile); }}/>
+            <div className="gameContainer">
+                <div key="status" className="statusContainer">
+                    <Counter key="bombCounter" value={this.state.bombCount} float="left"/>
+                    <ControlButton key="restartButton" 
+                        value={GAME_BUTTON_VALUES[this.state.gameState]} 
+                        float="left" onClick={() => this.restartGame()} />
+                    <Counter key="timer" value={this.state.elapsedSecs} float="left" />
+                    <ControlButton key="aboutButton" value={QUESTION_VALUE} float="right" />
+                    <ControlButton key="settingsButton" value={GEAR_VALUE} float="right" />
+                </div>
+                <div key="board" className="boardContainer">
+                {this.state.tiles.map(row => (
+                    <div key={"r" + row[0].y} className="boardRow">
+                    {row.map(tile => (
+                        <Tile 
+                            key={tile.key} 
+                            tileState={tile} 
+                            onClick={() => this.revealTile(tile)} 
+                            onContextMenu={(e) => { e.preventDefault();this.flagTile(tile); }}/>
+                    ))}
+                    </div>  
                 ))}
-                </div>  
-            ))}
+                </div>
             </div>
-        </div>
         )
     }
 
@@ -221,7 +219,7 @@ class Game extends React.Component {
                 if (newTiles[t.y] === this.state.tiles[t.y]) {
                     newTiles[t.y] = this.state.tiles[t.y].slice();
                 }
-                newTiles[t.y][t.x] = this.createTileState(t.x, t.y, t.isBomb, t.value, true, t.flagged);
+                newTiles[t.y][t.x] = createTileState(t.x, t.y, t.isBomb, t.value, true, t.flagged);
             }
 
             // propagate the reveal under two conditions:
@@ -244,6 +242,7 @@ class Game extends React.Component {
             if (this.isGameWon(newTiles, this.props.width, this.props.height)) {
                 gameState = WON;
                 this.flagAllTiles(newTiles);
+                newState.bombCount = 0;
             }
         } else {
             // game lost, reveal all bombs
@@ -336,33 +335,50 @@ class Game extends React.Component {
         const flagged = !this.state.tiles[tile.y][tile.x].flagged;
         const newTiles = this.state.tiles.slice();
         newTiles[tile.y] = this.state.tiles[tile.y].slice();
-        newTiles[tile.y][tile.x] = this.createTileState(tile.x, tile.y, tile.isBomb, tile.value, tile.revealed, flagged);
-        let counter = parseInt(this.state.bombCounter) + (flagged ? -1 : 1);
-        this.setState({ tiles: newTiles, bombCounter: counter });
+        newTiles[tile.y][tile.x] = createTileState(tile.x, tile.y, tile.isBomb, tile.value, tile.revealed, flagged);
+        let bombCount = parseInt(this.state.bombCount) + (flagged ? -1 : 1);
+        this.setState({ tiles: newTiles, bombCount: bombCount });
     }
 
-    /**
-     * Create tile state
-     * @param {*} x 
-     * @param {*} y 
-     * @param {*} isBomb 
-     * @param {*} value 
-     * @param {*} revealed 
-     * @param {*} flagged 
-     * @returns 
-     */
-    createTileState(x, y, isBomb, value, revealed, flagged) {
-        return { 
-            key: "(" + x + "," + y + ")",
-            x: x,
-            y: y, 
-            isBomb: isBomb, 
-            value: value, 
-            revealed: revealed,
-            flagged: flagged,
-        };
-    }
+}
+
+/**
+ * Create tile state
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} isBomb 
+ * @param {*} value 
+ * @param {*} revealed 
+ * @param {*} flagged 
+ * @returns 
+ */
+export function createTileState(x, y, isBomb, value, revealed, flagged) {
+    return { 
+        key: "t" + y + "_" + x,
+        x: x,
+        y: y, 
+        isBomb: isBomb, 
+        value: value, 
+        revealed: revealed,
+        flagged: flagged,
+    };
+}
   
+/**
+ * Get a list of randomly placed bombs
+ * @param {*} bombs 
+ */
+function randomlyPlantBombs(width, height, bombs) {
+    const hash = {};
+    for (let i = 0; i < bombs; i++) {
+        let x, y;
+        do {
+            x = randomInt(width);
+            y = randomInt(height);
+        } while (typeof hash[x + "," + y] !== "undefined");
+        hash[x + "," + y] = {x: x, y: y};
+    }
+    return Object.values(hash);
 }
 
 /**
