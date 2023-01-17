@@ -8,20 +8,20 @@ import Counter from './Counter.js';
 import Tile from './Tile.js';
 
 // Game state constants
-const START_WAIT = "start_wait";
-const PLAYING = "playing";
-const WON = "won";
-const LOST = "lost";
+export const START_WAIT = "start_wait";
+export const PLAYING = "playing";
+export const WON = "won";
+export const LOST = "lost";
 
 // Game button values
-const GAME_BUTTON_VALUES = {};
+export const GAME_BUTTON_VALUES = {};
 GAME_BUTTON_VALUES[START_WAIT] = '\u{1F60A}';
 GAME_BUTTON_VALUES[PLAYING] = '\u{1F60A}';
 GAME_BUTTON_VALUES[WON] = '\u{1F60E}';
 GAME_BUTTON_VALUES[LOST] = '\u{1F616}';
 
-const GEAR_VALUE = '\u{1F6E0}';
-const QUESTION_VALUE = '\u{2753}';
+export const GEAR_VALUE = '\u{1F6E0}';
+export const QUESTION_VALUE = '\u{2753}';
 
 /**
  * Minesweeper game

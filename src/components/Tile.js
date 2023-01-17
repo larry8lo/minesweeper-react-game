@@ -4,8 +4,8 @@
 import React from 'react';
 import './Tile.css';
 
-const BOMB_VALUE = '\u{1F4A3}';
-const FLAG_VALUE = '\u{1F6A9}';
+export const BOMB_VALUE = '\u{1F4A3}';
+export const FLAG_VALUE = '\u{1F6A9}';
 
 /**
  * A tile in the game board
