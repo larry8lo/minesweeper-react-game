@@ -1,0 +1,24 @@
+.sliderContainer {
+    padding: 2px;
+}
+.sliderLabel {
+    display: inline-block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    width: 32px;
+    text-align: center;
+    vertical-align: middle;
+}
+.sliderRange {
+    display: inline-block;
+    width: 120px;
+    vertical-align: middle;
+}
+.sliderValue {
+    display: inline-block;
+    font-family: Menlo, Monaco, Consolas, monospace;
+    font-size: 10pt;
+    text-align: right;
+    width: 32px;
+    vertical-align: middle;
+}

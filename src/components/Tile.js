@@ -16,32 +16,42 @@ class Tile extends React.Component {
         super(props);
     }
   
+    /**
+     * Renders a tile
+     * @returns rendered tile
+     */
     render() {
-        const id = this.props.tileState.key;
-        if (this.props.tileState.revealed) {
-            if (this.props.tileState.isBomb) {
+        const ts = this.props.tileState;
+        const id = ts.key;
+        if (ts.revealed) {
+            if (ts.isBomb) {
                 return (
                     <button data-testid={id} className="revealedTile bomb">{BOMB_VALUE}</button>
                 );
-            } else if (this.props.tileState.value === 0) {
-                return (
-                    <button data-testid={id} className="revealedTile" />
-                );
             } else {
-                const className = "revealedTile tile" + this.props.tileState.value;
+                const value = ts.value == 0 ? "" : ts.value;
+                const className = "revealedTile tile" + ts.value;
                 return (
-                    <button data-testid={id} className={className} onClick={this.props.onClick}>{this.props.tileState.value}</button>
+                    <button data-testid={id} className={className} onClick={this.props.onLeftClick} 
+                        onContextMenu={e => this.preventDefault(e, this.props.onLeftClick)}>{value}</button>
                 );
             }
         } else if (this.props.tileState.flagged) {
             return (
-                <button data-testid={id} className="flaggedTile" onContextMenu={this.props.onContextMenu}>{FLAG_VALUE}</button>
+                <button data-testid={id} className="flaggedTile" 
+                    onContextMenu={e => this.preventDefault(e, this.props.onRightClick)}>{FLAG_VALUE}</button>
             );
         } else {
             return (
-                <button data-testid={id} className="hiddenTile" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu} />
+                <button data-testid={id} className="hiddenTile" onClick={this.props.onLeftClick} 
+                    onContextMenu={e => this.preventDefault(e, this.props.onRightClick)} />
             );
         }
+    }
+
+    preventDefault(event, handler) {
+        event.preventDefault();
+        handler();
     }
 }
 

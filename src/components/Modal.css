@@ -1,0 +1,36 @@
+.modalOverlay {
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.modalRoot {
+    background: #dddddd;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    text-align: center;
+    padding: 4px;
+}
+
+.modalTitle {
+    background: darkslategray;
+    color: lightsteelblue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    text-align: left;
+    padding: 4px;
+    margin-bottom: 8px;
+}
+
+.modalCloseButton {
+    float: right;
+    font-size: 8pt;
+    height: 100%;
+
+}
+
+.modalContent {
+    padding: 8px;
+}

@@ -5,6 +5,11 @@
 .boardContainer {
   
 }
+
+.boardRow {
+    overflow: auto;
+    white-space: nowrap;
+}
   
 .boardContainer:after, .statusContainer:after {
     clear: both;
@@ -23,4 +28,17 @@
 
 .floatRight {
     float: right;
+}
+
+.modalContainer {
+    position: absolute;
+    z-index: 999;
+}
+
+.settingsSizePane {
+    margin-bottom: 8px;
+}
+
+.settingsSliderPane {
+    padding: 4px;
 }
